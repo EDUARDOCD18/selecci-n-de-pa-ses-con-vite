@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Formulario interactivo con menús desplegables dependientes de País, Estado y Ciudad."
+    />
+    <title>Ubicación | Menús Desplegables Dependientes</title>
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <!-- Contenedor principal -->
+    <main class="main-container">
+
+      <!-- card -->
+      <section class="card" aria-labelledby="form-title">
+
+        <!-- card header -->
+        <header class="card__header">
+          <h1 id="form-title" class="card__title">Selección de Ubicación</h1>
+          <p class="card__subtitle">
+            Selecciona tu ubicación geográfica de forma secuencial.
+          </p>
+        </header>
+
+        <!-- Formulario -->
+        <form id="location-form" class="card__form" novalidate>
+          <!-- Nivel 1: País -->
+          <div class="form-group">
+            <label for="country" class="form-group__label">
+              País
+              <span class="form-group__required" aria-hidden="true">*</span>
+            </label>
+            <select
+              id="country"
+              name="country"
+              class="form-group__select"
+              required
+              aria-required="true"
+              aria-describedby="country-hint"
+            >
+              <option value="">-- Selecciona un país --</option>
+            </select>
+            <span id="country-hint" class="form-group__hint"
+              >Selecciona tu país de residencia.</span
+            >
+          </div>
+
+          <!-- Nivel 2: Estado / Provincia -->
+          <div class="form-group">
+            <label for="state" class="form-group__label">
+              Estado / Provincia
+              <span class="form-group__required" aria-hidden="true">*</span>
+            </label>
+            <select
+              id="state"
+              name="state"
+              class="form-group__select"
+              disabled
+              required
+              aria-required="true"
+              aria-describedby="state-hint"
+            >
+              <option value="">-- Selecciona primero un país --</option>
+            </select>
+            <span id="state-hint" class="form-group__hint"
+              >Habilitado tras elegir un país.</span
+            >
+          </div>
+
+          <!-- Nivel 3: Ciudad -->
+          <div class="form-group">
+            <label for="city" class="form-group__label">
+              Ciudad
+              <span class="form-group__required" aria-hidden="true">*</span>
+            </label>
+            <select
+              id="city"
+              name="city"
+              class="form-group__select"
+              disabled
+              required
+              aria-required="true"
+              aria-describedby="city-hint"
+            >
+              <option value="">-- Selecciona primero un estado --</option>
+            </select>
+            <span id="city-hint" class="form-group__hint"
+              >Habilitado tras elegir un estado.</span
+            >
+          </div>
+
+          <button type="submit" class="card__button" disabled id="submit-btn">
+            Confirmar ubicación
+          </button>
+        </form>
+      </section>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
