@@ -8,7 +8,7 @@ const citySelect = document.getElementById("city");
 const submitBtn = document.getElementById("submit-btn");
 
 const groupCountry = document.getElementById("group-country");
-const groupState = document.getElementById("group-statre");
+const groupState = document.getElementById("group-state");
 const groupCity = document.getElementById("group-city");
 
 /**
@@ -16,10 +16,9 @@ const groupCity = document.getElementById("group-city");
  * @param {Object} params - Objeto con los parámetros de la URL (ej. { action: 'countries' })
  * @returns {Promise<Array>} Promesa que resuelve al arreglo de datos recibido
  */
-
-async function fetchLocation(params = {}) {
+async function fetchLocations(params = {}) {
   const query = new URLSearchParams(params).toString();
-  const url = `${API_URL}?{query}`;
+  const url = `${API_URL}?${query}`;
 
   const response = await fetch(url);
 
@@ -42,8 +41,7 @@ async function fetchLocation(params = {}) {
  * @param {Array} items - Arreglo de elementos a renderizar ({id, name} o strings)
  * @param {string} placeholder - Texto por defecto del option inicial
  */
-
-function renderOptions(selectElement, item, placeholder) {
+function renderOptions(selectElement, items, placeholder) {
   // Limpia el contenido previo e inserta la opción por defecto
   selectElement.innerHTML = `<option value="">${placeholder}</option>`;
 
@@ -66,18 +64,17 @@ function renderOptions(selectElement, item, placeholder) {
 /**
  * Carga e inicializa el menú desplegable de Países (Nivel 1) al iniciar la app
  */
-
 async function loadCountries() {
   // Activa la animación del spinner visual en el CSS mediante la clase BEM
   groupCountry.classList.add("form-group--loading");
   countrySelect.disabled = true;
 
   try {
-    const countries = await fetchLocation({ action: "countries" });
-    renderOptions(countrySelect, countries, "-- Selecciona un país -- ");
+    const countries = await fetchLocations({ action: "countries" });
+    renderOptions(countrySelect, countries, "-- Selecciona un país --");
     countrySelect.disabled = false;
   } catch (error) {
-    console.log("Falla al consultar países:", error);
+    console.error("Falla al consultar países:", error);
     renderOptions(countrySelect, [], "-- Error al cargar países --");
   } finally {
     // Desactiva el spinner independientemente de si la petición tuvo éxito o falló
