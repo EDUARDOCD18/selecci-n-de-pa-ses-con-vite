@@ -62,6 +62,17 @@ function renderOptions(selectElement, items, placeholder) {
 }
 
 /**
+ * Restablece la selección y el estado inhabilitado de un selector
+ * @param {HTMLSelectElement} selectElement - Control a limpiar
+ * @param {string} placeholder - Mensaje por defecto
+ */
+
+function resetSelect(selectElement, placeholder) {
+  selectElement.innerHTML = `<option value="">${placeholder}</option>`;
+  selectElement.disabled = true;
+}
+
+/**
  * Carga e inicializa el menú desplegable de Países (Nivel 1) al iniciar la app
  */
 async function loadCountries() {
@@ -82,5 +93,95 @@ async function loadCountries() {
   }
 }
 
+/**
+ * Maneja el cambio en el selector de Países (Nivel 1 -> Nivel 2)
+ */
+
+async function handleCountryChange() {
+  const selectedCountry = countrySelect.value;
+
+  // Reset en Cascada: Limpia Estados, Ciudades y deshabilita el botón de envío
+  resetSelect(stateSelect, "-- Selecciona un estado --");
+  resetSelect(citySelect, "-- Selecciona una ciudad --");
+  if (submitBtn) submitBtn.disabled = true;
+
+  // Si se seleccionó la opción vacía/placeholder, detenemos el flujo
+  if (!selectedCountry) return;
+  groupState.classList.add("form-group--loading");
+
+  try {
+    const states = await fetchLocations({
+      action: "states",
+      country: selectedCountry,
+    });
+
+    renderOptions(stateSelect, states, "-- Selecciona un estado --");
+    stateSelect.disabled = false;
+  } catch (error) {
+    console.error("Falla al consultar estados:", error);
+  } finally {
+    groupState.classList.remove("form-group--loading");
+  }
+}
+
+/**
+ * Maneja el cambio en el selector de Estados (Nivel 2 -> Nivel 3)
+ */
+
+async function handleStateChange() {
+  const selectedCountry = countrySelect.value;
+  const selectedState = stateSelect.value;
+
+  // Reset de Nivel Inferior: Limpia Ciudades y desactiva botón de envío
+  resetSelect(citySelect, "-- Selecciona una ciudad --");
+  if (submitBtn) submitBtn.disabled = true;
+
+  // Si no hay estado seleccionado, detenemos el flujo
+  if (!selectedState) return;
+
+  groupCity.classList.add("form-group--loading");
+
+  try {
+    const cities = await fetchLocations({
+      action: "cities",
+      country: selectedCountry,
+      state: selectedState,
+    });
+
+    renderOptions(citySelect, cities, "-- Selecciona una ciudad --");
+    citySelect.disabled = false;
+  } catch (error) {
+    console.error("Falla al consultar ciudades:", error);
+    resetSelect(citySelect, "-- Error al cargar ciudades --");
+  } finally {
+    groupCity.classList.remove("form-group--loading");
+  }
+}
+
+/**
+ * Maneja el cambio en el selector de Ciudades (Nivel 3 -> Habilitación de Envío)
+ */
+
+function handleCityChange() {
+  const selectedCity = citySelect.value;
+
+  if (submitBtn) {
+    submitBtn.disabled = !selectedCity;
+  }
+}
+
+/**
+ * Inicialización de Escuchadores de Eventos
+ */
+
+function initEvents() {
+  countrySelect.addEventListener("change", handleCountryChange);
+  stateSelect.addEventListener("change", handleStateChange);
+  citySelect.addEventListener("change", handleCityChange);
+}
+
 // Escuchador del evento de carga inicial del DOM
-document.addEventListener("DOMContentLoaded", loadCountries);
+document.addEventListener("DOMContentLoaded", () => {
+  loadCountries();
+  initEvents();
+});
