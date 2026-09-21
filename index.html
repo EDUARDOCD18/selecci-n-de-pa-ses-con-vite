@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Formulario interactivo con menús desplegables dependientes de País, Estado y Ciudad."
+      content="Formulario interactivo con menús desplegables dependientes de País, Estado y Ciudad con manejo de errores y accesibilidad."
     />
     <title>Ubicación | Menús Desplegables Dependientes</title>
     <link rel="stylesheet" href="./src/style.css" />
@@ -34,7 +34,9 @@
                 class="form-group__select"
                 required
                 aria-required="true"
-                aria-describedby="country-hint"
+                aria-busy="false"
+                aria-disabled="false"
+                aria-describedby="country-hint country-error"
               >
                 <option value="">-- Selecciona un país --</option>
               </select>
@@ -43,6 +45,8 @@
             <span id="country-hint" class="form-group__hint"
               >Selecciona tu país de residencia.</span
             >
+            <!-- Contenedor de error para accesibilidad -->
+            <span id="country-error" class="form-error-msg" role="alert"></span>
           </div>
 
           <!-- Nivel 2: Estado / Provincia -->
@@ -59,7 +63,9 @@
                 disabled
                 required
                 aria-required="true"
-                aria-describedby="state-hint"
+                aria-busy="false"
+                aria-disabled="true"
+                aria-describedby="state-hint state-error"
               >
                 <option value="">-- Selecciona primero un país --</option>
               </select>
@@ -68,6 +74,7 @@
             <span id="state-hint" class="form-group__hint"
               >Habilitado tras elegir un país.</span
             >
+            <span id="state-error" class="form-error-msg" role="alert"></span>
           </div>
 
           <!-- Nivel 3: Ciudad -->
@@ -84,7 +91,9 @@
                 disabled
                 required
                 aria-required="true"
-                aria-describedby="city-hint"
+                aria-busy="false"
+                aria-disabled="true"
+                aria-describedby="city-hint city-error"
               >
                 <option value="">-- Selecciona primero un estado --</option>
               </select>
@@ -93,12 +102,31 @@
             <span id="city-hint" class="form-group__hint"
               >Habilitado tras elegir un estado.</span
             >
+            <span id="city-error" class="form-error-msg" role="alert"></span>
           </div>
 
-          <button type="submit" class="card__button" disabled id="submit-btn">
+          <button
+            type="submit"
+            class="card__button"
+            disabled
+            id="submit-btn"
+            aria-disabled="true"
+          >
             Confirmar ubicación
           </button>
         </form>
+
+        <!-- 👇 AGREGAR ESTE BLOQUE DE ÉXITO QUE FALTABA -->
+        <div id="success-card" class="card__success" hidden>
+          <div class="card__success-icon" aria-hidden="true">✓</div>
+          <h2 class="card__success-title">¡Ubicación Confirmada!</h2>
+          <p class="card__success-desc" id="success-summary">
+            Has seleccionado: <span id="summary-text"></span>
+          </p>
+          <button type="button" class="card__button" id="reset-form-btn">
+            Elegir otra ubicación
+          </button>
+        </div>
       </section>
     </main>
 
