@@ -1,5 +1,5 @@
 // Configuración de la ruta del endpoint PHP
-const API_URL = "./api/locations.php";
+const API_URL = "./public/api/locations.php";
 
 // Referencias a los elementos del DOM
 const countrySelect = document.getElementById("country");
